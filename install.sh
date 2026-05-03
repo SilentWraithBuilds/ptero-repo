@@ -1,6 +1,10 @@
 #!/bin/bash
 
 set -e
+
+# ===== ERROR HANDLER =====
+trap 'echo -e "\e[31m❌ Error occurred. Script stopped.\e[0m"; exit 1;' ERR
+
 clear
 
 # ===== COLORS =====
@@ -10,12 +14,12 @@ YELLOW="\e[33m"
 RED="\e[31m"
 RESET="\e[0m"
 
-# ===== PROGRESS BAR =====
+# ===== PROGRESS =====
 progress() {
   echo -ne "${CYAN}["
-  for i in $(seq 1 20); do
+  for i in $(seq 1 25); do
     echo -ne "#"
-    sleep 0.03
+    sleep 0.02
   done
   echo -e "]${RESET}"
 }
@@ -28,7 +32,6 @@ echo "           SILENT WRAITH"
 echo "========================================="
 echo -e "${RESET}"
 
-# ===== MENU =====
 echo "1) Install Panel"
 echo "2) Install Wings"
 echo "3) Install Tailscale"
@@ -48,7 +51,7 @@ echo -e "${GREEN}Updating system...${RESET}"
 apt update -y && apt upgrade -y
 progress
 
-echo -e "${GREEN}Installing dependencies...${RESET}"
+echo -e "${GREEN}Installing packages...${RESET}"
 apt install -y curl tar unzip git nginx mariadb-server redis-server \
 software-properties-common apt-transport-https ca-certificates lsb-release ufw
 progress
@@ -65,7 +68,7 @@ curl -sS https://getcomposer.org/installer | php
 mv composer.phar /usr/local/bin/composer
 progress
 
-echo -e "${GREEN}Setting up database...${RESET}"
+echo -e "${GREEN}Database setup...${RESET}"
 mysql -u root <<MYSQL
 CREATE DATABASE panel;
 CREATE USER 'ptero'@'127.0.0.1' IDENTIFIED BY '$DBPASS';
@@ -82,12 +85,12 @@ chmod -R 755 storage bootstrap/cache
 cp .env.example .env
 progress
 
-echo -e "${GREEN}Installing panel dependencies...${RESET}"
+echo -e "${GREEN}Installing panel...${RESET}"
 composer install --no-dev --optimize-autoloader
 php artisan key:generate --force
 progress
 
-echo -e "${GREEN}Configuring environment...${RESET}"
+echo -e "${GREEN}Configuring env...${RESET}"
 sed -i "s|APP_URL=.*|APP_URL=http://$DOMAIN|" .env
 sed -i "s|DB_PASSWORD=.*|DB_PASSWORD=$DBPASS|" .env
 sed -i "s|DB_DATABASE=.*|DB_DATABASE=panel|" .env
@@ -98,7 +101,7 @@ echo -e "${GREEN}Running migrations...${RESET}"
 php artisan migrate --seed --force
 progress
 
-echo -e "${GREEN}Creating admin (admin/admin)...${RESET}"
+echo -e "${GREEN}Creating admin...${RESET}"
 php artisan p:user:make <<EOF
 admin
 admin
@@ -133,11 +136,12 @@ server {
 EOF
 
 ln -sf /etc/nginx/sites-available/pterodactyl /etc/nginx/sites-enabled/
+nginx -t
 systemctl restart nginx php8.2-fpm redis-server mariadb
 progress
 
-# ===== QUEUE WORKER =====
-echo -e "${GREEN}Setting up queue worker...${RESET}"
+# QUEUE WORKER
+echo -e "${GREEN}Setting queue worker...${RESET}"
 cat > /etc/systemd/system/pteroq.service <<EOF
 [Unit]
 Description=Pterodactyl Queue Worker
@@ -145,21 +149,21 @@ After=redis-server.service
 
 [Service]
 User=www-data
-Group=www-data
 Restart=always
-ExecStart=/usr/bin/php /var/www/pterodactyl/artisan queue:work --sleep=3 --tries=3
+ExecStart=/usr/bin/php /var/www/pterodactyl/artisan queue:work --queue=default --sleep=3 --tries=3 --timeout=90
 
 [Install]
 WantedBy=multi-user.target
 EOF
 
+systemctl daemon-reexec
 systemctl daemon-reload
 systemctl enable pteroq
 systemctl start pteroq
 progress
 
-# ===== FIREWALL =====
-echo -e "${GREEN}Configuring firewall...${RESET}"
+# FIREWALL
+echo -e "${GREEN}Firewall setup...${RESET}"
 ufw allow 22/tcp
 ufw allow 80/tcp
 ufw allow 443/tcp
@@ -169,8 +173,8 @@ ufw --force enable
 progress
 
 echo -e "${GREEN}✅ PANEL READY${RESET}"
-echo "🌐 http://$DOMAIN"
-echo "👤 admin / admin"
+echo "URL: http://$DOMAIN"
+echo "Login: admin / admin"
 echo "DB PASS: $DBPASS"
 
 # =========================
@@ -188,7 +192,7 @@ curl -L https://github.com/pterodactyl/wings/releases/latest/download/wings_linu
 chmod +x /usr/local/bin/wings
 progress
 
-echo -e "${YELLOW}--- Wings Configuration ---${RESET}"
+echo -e "${YELLOW}Wings Config${RESET}"
 read -p "Panel URL: " PANEL_URL
 read -p "Node UUID: " UUID
 read -p "Node Token: " TOKEN
@@ -205,13 +209,14 @@ api:
   ssl:
     enabled: false
 
+remote: "$PANEL_URL"
+
 system:
   data: /var/lib/pterodactyl/volumes
   sftp:
     bind_port: 2022
 EOF
 
-# ===== SYSTEMD WINGS =====
 echo -e "${GREEN}Creating Wings service...${RESET}"
 cat > /etc/systemd/system/wings.service <<EOF
 [Unit]
@@ -235,10 +240,10 @@ systemctl enable wings
 systemctl start wings
 progress
 
-echo -e "${GREEN}✅ Wings running on port 8080${RESET}"
+echo -e "${GREEN}✅ Wings running${RESET}"
 
 # =========================
-# TAILSCALE INSTALL
+# TAILSCALE
 # =========================
 elif [ "$choice" == "3" ]; then
 
@@ -246,11 +251,10 @@ echo -e "${GREEN}Installing Tailscale...${RESET}"
 curl -fsSL https://tailscale.com/install.sh | sh
 progress
 
-echo -e "${GREEN}Starting Tailscale...${RESET}"
 tailscale up
 progress
 
-echo -e "${GREEN}✅ Tailscale connected${RESET}"
+echo -e "${GREEN}✅ Tailscale ready${RESET}"
 
 else
 echo -e "${RED}Invalid choice${RESET}"
