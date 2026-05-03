@@ -16,7 +16,24 @@ while true; do
 clear
 
 echo -e "${CYAN}"
-echo " ▄▄▄       ██▓███   ▄▄▄█████▓"
+echo "                                                                                                                                                                                                                        ";
+echo "                   iiii  lllllll                                                tttt                                                                                     iiii          tttt         hhhhhhh             ";
+echo "                  i::::i l:::::l                                             ttt:::t                                                                                    i::::i      ttt:::t         h:::::h             ";
+echo "                   iiii  l:::::l                                             t:::::t                                                                                     iiii       t:::::t         h:::::h             ";
+echo "                         l:::::l                                             t:::::t                                                                                                t:::::t         h:::::h             ";
+echo "    ssssssssss   iiiiiii  l::::l     eeeeeeeeeeee    nnnn  nnnnnnnn    ttttttt:::::tttttttwwwwwww           wwwww           wwwwwwwrrrrr   rrrrrrrrr   aaaaaaaaaaaaa   iiiiiiittttttt:::::ttttttt    h::::h hhhhh       ";
+echo "  ss::::::::::s  i:::::i  l::::l   ee::::::::::::ee  n:::nn::::::::nn  t:::::::::::::::::t w:::::w         w:::::w         w:::::w r::::rrr:::::::::r  a::::::::::::a  i:::::it:::::::::::::::::t    h::::hh:::::hhh    ";
+echo "ss:::::::::::::s  i::::i  l::::l  e::::::eeeee:::::een::::::::::::::nn t:::::::::::::::::t  w:::::w       w:::::::w       w:::::w  r:::::::::::::::::r aaaaaaaaa:::::a  i::::it:::::::::::::::::t    h::::::::::::::hh  ";
+echo "s::::::ssss:::::s i::::i  l::::l e::::::e     e:::::enn:::::::::::::::ntttttt:::::::tttttt   w:::::w     w:::::::::w     w:::::w   rr::::::rrrrr::::::r         a::::a  i::::itttttt:::::::tttttt    h:::::::hhh::::::h ";
+echo " s:::::s  ssssss  i::::i  l::::l e:::::::eeeee::::::e  n:::::nnnn:::::n      t:::::t          w:::::w   w:::::w:::::w   w:::::w     r:::::r     r:::::r  aaaaaaa:::::a  i::::i      t:::::t          h::::::h   h::::::h";
+echo "   s::::::s       i::::i  l::::l e:::::::::::::::::e   n::::n    n::::n      t:::::t           w:::::w w:::::w w:::::w w:::::w      r:::::r     rrrrrrraa::::::::::::a  i::::i      t:::::t          h:::::h     h:::::h";
+echo "      s::::::s    i::::i  l::::l e::::::eeeeeeeeeee    n::::n    n::::n      t:::::t            w:::::w:::::w   w:::::w:::::w       r:::::r           a::::aaaa::::::a  i::::i      t:::::t          h:::::h     h:::::h";
+echo "ssssss   s:::::s  i::::i  l::::l e:::::::e             n::::n    n::::n      t:::::t    tttttt   w:::::::::w     w:::::::::w        r:::::r          a::::a    a:::::a  i::::i      t:::::t    tttttth:::::h     h:::::h";
+echo "s:::::ssss::::::si::::::il::::::le::::::::e            n::::n    n::::n      t::::::tttt:::::t    w:::::::w       w:::::::w         r:::::r          a::::a    a:::::a i::::::i     t::::::tttt:::::th:::::h     h:::::h";
+echo "s::::::::::::::s i::::::il::::::l e::::::::eeeeeeee    n::::n    n::::n      tt::::::::::::::t     w:::::w         w:::::w          r:::::r          a:::::aaaa::::::a i::::::i     tt::::::::::::::th:::::h     h:::::h";
+echo " s:::::::::::ss  i::::::il::::::l  ee:::::::::::::e    n::::n    n::::n        tt:::::::::::tt      w:::w           w:::w           r:::::r           a::::::::::aa:::ai::::::i       tt:::::::::::tth:::::h     h:::::h";
+echo "  sssssssssss    iiiiiiiillllllll    eeeeeeeeeeeeee    nnnnnn    nnnnnn          ttttttttttt         www             www            rrrrrrr            aaaaaaaaaa  aaaaiiiiiiii         ttttttttttt  hhhhhhh     hhhhhhh";
+echo "                                                                                                                                                                                                                        ";
 echo "      🦖 PTERODACTYL INSTALL SCRIPT"
 echo "            SILENT WRAITH"
 echo -e "${RESET}"
